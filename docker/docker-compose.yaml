@@ -1,0 +1,26 @@
+name: ros2
+services:
+  ws:
+    container_name: ros2_ws
+    cap_add:
+      - NET_ADMIN
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - DISPLAY=:0.0
+      - QT_X11_NO_MITSHM=1
+      - XAUTHORITY=/tmp/.docker.xauth
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    volumes:
+      - ../configuration:/home/ros2_ws/configuration
+      - ../src:/home/ros2_ws/src
+      - ../scripts:/home/ros2_ws/scripts
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
+    network_mode: host
+    tty: true
+    entrypoint: bash /home/ros2_ws/configuration/docker-entrypoint.sh
+    stdin_open: true
